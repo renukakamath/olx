@@ -1,24 +1,22 @@
+// Login.js
 import React, { useState, useContext } from 'react';
 import { FirebaseContext } from '../../store/firebaseContext';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';  // Correct import for Firebase auth
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Import correct Firebase function
+import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
 import Logo from '../../olx-logo.png';
 import './Login.css';
-import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { firebase } = useContext(FirebaseContext);
-  
-  const navigate = useNavigate(); // Initialize useNavigate
+   const navigate = useNavigate(); // Initialize useNavigate
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const auth = getAuth(firebase);  // Get the Auth instance from Firebase
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(firebase, email, password)
       .then(() => {
         alert('Login successful');
-      
         navigate("/"); // Use navigate for redirection
       })
       .catch((error) => {
@@ -39,7 +37,7 @@ function Login() {
             id="email"
             name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}  // Use controlled component for email
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <br />
@@ -51,14 +49,14 @@ function Login() {
             id="password"
             name="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}  // Use controlled component for password
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <br />
           <br />
           <button type="submit">Login</button>
         </form>
-        <a href="/signup">Signup</a> {/* Added href to navigate to signup */}
+        <a href="/signup">Signup</a>
       </div>
     </div>
   );
