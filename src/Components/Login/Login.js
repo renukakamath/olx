@@ -1,38 +1,64 @@
-import React from 'react';
-
+import React, { useState, useContext } from 'react';
+import { FirebaseContext } from '../../store/firebaseContext';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';  // Correct import for Firebase auth
 import Logo from '../../olx-logo.png';
 import './Login.css';
+import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
 
 function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { firebase } = useContext(FirebaseContext);
+  
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const auth = getAuth(firebase);  // Get the Auth instance from Firebase
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        alert('Login successful');
+      
+        navigate("/"); // Use navigate for redirection
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   return (
     <div>
       <div className="loginParentDiv">
-        <img width="200px" height="200px" src={Logo}></img>
-        <form>
-          <label htmlFor="fname">Email</label>
+        <img width="200px" height="200px" src={Logo} alt="OLX Logo" />
+        <form onSubmit={handleLogin}>
+          <label htmlFor="email">Email</label>
           <br />
           <input
             className="input"
             type="email"
-            id="fname"
+            id="email"
             name="email"
-            defaultValue="John"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}  // Use controlled component for email
+            required
           />
           <br />
-          <label htmlFor="lname">Password</label>
+          <label htmlFor="password">Password</label>
           <br />
           <input
             className="input"
             type="password"
-            id="lname"
+            id="password"
             name="password"
-            defaultValue="Doe"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}  // Use controlled component for password
+            required
           />
           <br />
           <br />
-          <button>Login</button>
+          <button type="submit">Login</button>
         </form>
-        <a>Signup</a>
+        <a href="/signup">Signup</a> {/* Added href to navigate to signup */}
       </div>
     </div>
   );
